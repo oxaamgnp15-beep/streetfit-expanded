@@ -1,0 +1,6 @@
+[project]
+name = "streetfit-coach"
+version = "0.1.0"
+dependencies = ["fastapi>=0.112", "uvicorn>=0.30", "pydantic>=2.7", "numpy>=2.0"]
+[tool.uvicorn]
+factory = false
