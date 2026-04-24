@@ -1,0 +1,12 @@
+--- packages/config/eslint.config.mjs
++++ packages/config/eslint.config.mjs
+@@ -1,6 +1,8 @@
+ import ts from 'typescript-eslint';
++import parser from '@typescript-eslint/parser';
+ export default [
+   { ignores: ['**/dist/**', '**/.next/**'] },
+   ...ts.config({
+     files: ['**/*.{ts,tsx,js,jsx}'],
+-    languageOptions: { parserOptions: { project: true } },
++    languageOptions: { parser, parserOptions: { project: true } },
+     rules: {

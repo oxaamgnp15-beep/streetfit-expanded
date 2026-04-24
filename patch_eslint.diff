@@ -1,0 +1,13 @@
+--- packages/config/eslint.config.mjs
++++ packages/config/eslint.config.mjs
+@@ -5,7 +5,10 @@
+   ...ts.config({
+     files: ['**/*.{ts,tsx,js,jsx}'],
+-    languageOptions: { parserOptions: { project: true } },
++    languageOptions: {
++      parser: ts.parser,
++      parserOptions: { project: true }
++    },
+     rules: {
+       'no-console': ['warn', { allow: ['warn', 'error'] }],
+       '@typescript-eslint/explicit-module-boundary-types': 'off'
