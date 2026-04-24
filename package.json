@@ -1,0 +1,27 @@
+{
+  "name": "streetfit",
+  "private": true,
+  "packageManager": "pnpm@9.6.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "e2e": "turbo run e2e",
+    "migrate": "pnpm --filter @streetfit/api prisma migrate deploy",
+    "seed": "pnpm --filter @streetfit/api prisma db seed",
+    "compose": "docker compose up --build",
+    "sbom": "syft packages dir:. -o json > sbom.json",
+    "scan": "trivy fs --exit-code 1 --severity HIGH,CRITICAL ."
+  },
+  "devDependencies": {
+    "turbo": "^2.1.2",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.59.0"
+  }
+}
