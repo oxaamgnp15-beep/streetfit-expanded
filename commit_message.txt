@@ -1,0 +1,5 @@
+🔒 Fix SSRF/Path Traversal in exercises API route
+
+🎯 **What:** Fixed an SSRF/Path Traversal vulnerability in the `exercises/[id]` Next.js API route.
+⚠️ **Risk:** The `params.id` user input was being directly appended to the `fetch` URL without validation or encoding. This could allow an attacker to read arbitrary files via path traversal (e.g. `../../`) or access internal endpoints via Server-Side Request Forgery (SSRF).
+🛡️ **Solution:** Encoded the `params.id` parameter using `encodeURIComponent` before appending it to the `fetch` URL, ensuring that special characters are properly neutralized.
