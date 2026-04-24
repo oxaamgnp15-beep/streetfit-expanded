@@ -1,0 +1,22 @@
+name: ci
+on:
+  push: { branches: [main] }
+  pull_request: { branches: [main] }
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: 'pnpm' }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint && pnpm typecheck
+      - run: pnpm build
+      - run: pnpm test --if-present
+      - name: Build Docker images
+        run: |
+          docker build -f infra/docker/api.Dockerfile -t api:ci .
+          docker build -f infra/docker/web.Dockerfile -t web:ci .
+          docker build -f infra/docker/coach-py.Dockerfile -t coach:ci .
