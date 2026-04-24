@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+
+}
+
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(user)
+  locale       String   @default("en")
+  twoFASecret  String?  @map("two_fa_secret")
+  isBanned     Boolean  @default(false)
+  deletedAt    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  workouts     Workout[]
+  plans        Plan[]
+  auditLogs    AuditLog[]
+  refreshTokens RefreshToken[]
+}
+
+enum Role {
+  user
+  admin
+}
+
+enum ItemType {
+  interval
+  reps
+  emom
+  amrap
+}
+
+enum AssetKind {
+  video
+  poster
+  gltf
+  hdri
+}
+
+
+model Exercise {
+  id               String   @id @default(uuid())
+  name             String
+  slug             String   @unique
+  primaryMuscles   String[]
+  secondaryMuscles String[]
+  equipment        String[]
+  skill            String
+  met              Float
+  instructions     String[]
+  regressions      String[]
+  progressions     String[]
+  tags             String[]
+  videoUrl         String?
+  posterUrl        String?
+  gltfAssetId      String?
+  hdriAssetId      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  @@index([name])
+}
+
+model Plan {
+  id        String   @id @default(uuid())
+  userId    String
+  name      String
+  items     PlanItem[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model PlanItem {
+  id          String   @id @default(uuid())
+  planId      String
+  exerciseId  String
+  type        ItemType
+  sets        Int      @default(1)
+  reps        Int      @default(0)
+  durationSec Int      @default(0)
+  restSec     Int      @default(60)
+  plan        Plan     @relation(fields: [planId], references: [id])
+}
+
+model Workout {
+  id        String   @id @default(uuid())
+  userId    String
+  planId    String?
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
+  entries   WorkoutEntry[]
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model WorkoutEntry {
+  id          String   @id @default(uuid())
+  workoutId   String
+  exerciseId  String
+  reps        Int?
+  durationSec Int?
+  notes       String?
+  workout     Workout  @relation(fields: [workoutId], references: [id])
+}
+
+model Asset {
+  id        String   @id @default(uuid())
+  kind      AssetKind
+  path      String
+  size      Int
+  mime      String
+  sha256    String
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  actor     String
+  action    String
+  entity    String?
+  entityId  String?
+  meta      Json?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}

@@ -1,0 +1,12 @@
+import ts from 'typescript-eslint';
+export default [
+  { ignores: ['**/dist/**', '**/.next/**'] },
+  ...ts.config({
+    files: ['**/*.{ts,tsx,js,jsx}'],
+    languageOptions: { parserOptions: { project: true } },
+    rules: {
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      '@typescript-eslint/explicit-module-boundary-types': 'off'
+    }
+  })
+];
